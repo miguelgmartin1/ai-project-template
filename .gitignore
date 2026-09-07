@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+evals/results/*.json
+!evals/results/.gitkeep
+data/raw/
+checkpoints/
+*.safetensors
+*.pt
+.ipynb_checkpoints/
