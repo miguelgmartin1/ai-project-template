@@ -27,8 +27,8 @@ evals = ["pandas", "matplotlib", "datasets"]
 # agents = ["langgraph", "mcp"]
 # ml = ["torch", "transformers", "peft", "trl", "accelerate"]
 
-[tool.uv]
-dev-dependencies = []
+[dependency-groups]
+dev = []
 
 [tool.ruff]
 line-length = 100
