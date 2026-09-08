@@ -30,6 +30,8 @@ Public interfaces between modules. Pydantic models and function signatures, not 
 
 ```python
 class Query(BaseModel): ...
+
+
 def retrieve(q: Query, k: int) -> list[Chunk]: ...
 ```
 

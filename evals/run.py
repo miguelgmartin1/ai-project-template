@@ -1,7 +1,8 @@
 """Evaluation harness skeleton.
 
-Every project defines: a dataset in evals/datasets/, a `score(example, prediction) -> dict` function,
-and writes a results JSON with per-example scores + aggregate metrics + git SHA + model name.
+Every project defines: a dataset in evals/datasets/, a
+`score(example, prediction) -> dict` function, and writes a results JSON with
+per-example scores + aggregate metrics + git SHA + model name.
 The README's "Results" section is generated from these files, never written by hand.
 """
 
@@ -42,7 +43,9 @@ def main() -> None:
 
     metric_keys = [k for k in rows[0] if k not in ("id", "prediction")] if rows else []
     aggregate = {k: sum(r[k] for r in rows) / len(rows) for k in metric_keys}
-    sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
+    sha = subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True
+    ).stdout.strip()
     out = {
         "timestamp": datetime.now(UTC).isoformat(),
         "git_sha": sha,
