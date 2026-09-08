@@ -6,13 +6,19 @@ A/B comparisons in evals are a one-line change.
 
 from __future__ import annotations
 
-from langfuse.decorators import observe
+from functools import lru_cache
+
+from langfuse import observe
 from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam
 
 from project.settings import settings
 
-_client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=settings.openrouter_api_key)
+
+@lru_cache(maxsize=1)
+def _client() -> OpenAI:
+    """Built on first use, not at import time, so the module imports without credentials."""
+    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=settings.openrouter_api_key)
 
 
 @observe()
@@ -22,5 +28,5 @@ def complete(prompt: str, *, model: str | None = None, system: str = "", **kwarg
     if system:
         messages.append({"role": "system", "content": system})
     messages.append({"role": "user", "content": prompt})
-    resp = _client.chat.completions.create(model=model, messages=messages, **kwargs)
+    resp = _client().chat.completions.create(model=model, messages=messages, **kwargs)
     return resp.choices[0].message.content or ""
