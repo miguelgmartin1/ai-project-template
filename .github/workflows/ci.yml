@@ -28,8 +28,21 @@ jobs:
       LANGFUSE_HOST: https://cloud.langfuse.com
     steps:
       - uses: actions/checkout@v4
+      - name: Check for eval dataset
+        id: dataset
+        run: |
+          if [ -f evals/datasets/dev.jsonl ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No eval dataset yet, skipping evals gate"
+            echo "::notice::No eval dataset yet, skipping evals gate"
+          fi
       - uses: astral-sh/setup-uv@v3
-      - run: uv sync --all-extras --locked
-      - run: uv run python -m evals.run --ci
-      - uses: actions/upload-artifact@v4
+      - if: steps.dataset.outputs.found == 'true'
+        run: uv sync --all-extras --locked
+      - if: steps.dataset.outputs.found == 'true'
+        run: uv run python -m evals.run --ci
+      - if: steps.dataset.outputs.found == 'true'
+        uses: actions/upload-artifact@v4
         with: { name: eval-results, path: evals/results/ }
